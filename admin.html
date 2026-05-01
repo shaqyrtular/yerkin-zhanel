@@ -39,10 +39,6 @@ body{background:#faf6f0;font-family:'Montserrat',sans-serif;color:#3d2c24;min-he
     <span class="dot"></span>
     <span id="status">Тікелей • 05:17:38</span>
   </div>
-
-  <div class="reset-wrap">
-    <button class="reset-btn" onclick="resetCount()">Счётчикті нөлге қою</button>
-  </div>
 </div>
 
 <script>
@@ -79,15 +75,6 @@ function updateDisplay(val) {
   document.getElementById('status').textContent = `Тікелей • ${time}`;
 }
 
-async function resetCount() {
-  if (!confirm('Счётчикті нөлге қоясыз ба?')) return;
-  try {
-    await fetch(`${FB}/rsvp/yes.json`, {
-      method: 'PUT',
-      body: JSON.stringify(0)
-    });
-  } catch(e) { alert('Қате шықты'); }
-}
 </script>
 
 
