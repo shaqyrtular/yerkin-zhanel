@@ -1,80 +1,334 @@
+<!DOCTYPE html>
 <html lang="kk"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Той — Админка</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&amp;family=Great+Vibes&amp;family=Montserrat:wght@300;400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Great+Vibes&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#faf6f0;font-family:'Montserrat',sans-serif;color:#3d2c24;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-.card{background:#fff;border:1px solid rgba(150,110,90,.14);border-radius:24px;padding:40px 32px;max-width:360px;width:100%;text-align:center;box-shadow:0 16px 48px rgba(100,60,40,.09)}
-.card-label{font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:#9b7560;margin-bottom:16px}
-.couple{font-family:'Great Vibes',cursive;font-size:46px;color:#7a1e2e;line-height:1;margin-bottom:6px}
-.wedding-date{font-family:'Cormorant Garamond',serif;font-size:15px;color:#9b7560;letter-spacing:.08em;margin-bottom:32px}
-.divider{height:1px;background:rgba(122,98,88,.15);margin-bottom:28px}
-.counter-label{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#9b7560;margin-bottom:12px}
-.counter{font-family:'Great Vibes',cursive;font-size:96px;line-height:1;color:#7a1e2e;margin-bottom:6px;transition:transform .3s ease}
-.counter.bump{transform:scale(1.15)}
-.counter-sub{font-family:'Cormorant Garamond',serif;font-size:16px;color:#9b7560;font-style:italic;margin-bottom:32px}
-.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-right:6px;animation:pulse 1.5s infinite}
-.status{margin-top:16px;font-family:'Cormorant Garamond',serif;font-size:13px;color:#b8a090;min-height:20px;display:flex;align-items:center;justify-content:center;gap:4px}
-.reset-wrap{margin-top:28px;padding-top:24px;border-top:1px solid rgba(122,98,88,.1)}
-.reset-btn{background:none;border:none;font-family:'Cormorant Garamond',serif;font-size:13px;color:rgba(155,117,96,.5);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
-.reset-btn:hover{color:#9b7560}
+body{background:#faf6f0;font-family:'Montserrat',sans-serif;color:#3d2c24;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px;gap:16px}
+
+.card{background:#fff;border:1px solid rgba(150,110,90,.14);border-radius:24px;padding:32px 24px 24px;max-width:360px;width:100%;text-align:center;box-shadow:0 16px 48px rgba(100,60,40,.09)}
+.card-label{font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:#9b7560;margin-bottom:12px}
+.couple{font-family:'Great Vibes',cursive;font-size:46px;color:#7a1e2e;line-height:1;margin-bottom:4px}
+.wedding-date{font-family:'Cormorant Garamond',serif;font-size:15px;color:#9b7560;letter-spacing:.08em;margin-bottom:24px}
+.divider-h{height:1px;background:rgba(122,98,88,.15);margin-bottom:24px}
+
+.counters-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.c-label{font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:#9b7560;margin-bottom:8px;line-height:1.4;text-align:center}
+.c-num{font-family:'Great Vibes',cursive;font-size:80px;line-height:.9;color:#7a1e2e;transition:transform .3s ease;margin-bottom:4px}
+.c-num.no-num{color:#b8a090}
+.c-num.bump{transform:scale(1.18)}
+.c-sub{font-family:'Cormorant Garamond',serif;font-size:14px;color:#9b7560;font-style:italic}
+
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#22c55e;margin-right:5px;animation:pulse 1.5s infinite}
+.status{font-family:'Cormorant Garamond',serif;font-size:13px;color:#b8a090;display:flex;align-items:center;justify-content:center;gap:4px}
+
+.list-wrap{max-width:360px;width:100%}
+
+.list-toggle{
+  width:100%;padding:17px 24px;border-radius:16px;
+  border:1.5px solid rgba(122,30,46,.18);background:#fff;color:#7a1e2e;
+  font-family:'Montserrat',sans-serif;font-size:12px;font-weight:500;
+  letter-spacing:.22em;text-transform:uppercase;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;
+  box-shadow:0 8px 24px rgba(100,60,40,.07);transition:all .22s;
+}
+.list-toggle:hover{background:#7a1e2e;color:#fff;border-color:#7a1e2e;box-shadow:0 10px 28px rgba(122,30,46,.22)}
+.list-toggle:hover .toggle-arrow{filter:brightness(0) invert(1)}
+.toggle-left{display:flex;align-items:center;gap:10px}
+.toggle-arrow{width:18px;height:18px;transition:transform .3s ease;opacity:.5}
+.toggle-arrow.open{transform:rotate(180deg)}
+
+.guest-list-box{
+  background:#fff;border:1px solid rgba(150,110,90,.14);border-radius:16px;
+  margin-top:8px;overflow:hidden;box-shadow:0 12px 32px rgba(100,60,40,.08);
+  max-height:0;transition:max-height .4s cubic-bezier(.4,0,.2,1),opacity .3s ease;opacity:0;
+}
+.guest-list-box.open{max-height:700px;opacity:1}
+
+.filter-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;border-bottom:1px solid rgba(150,110,90,.1);
+  background:#fdf7f0;gap:8px;
+}
+.filter-label{font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:#b8a090;white-space:nowrap}
+.filter-select{
+  appearance:none;-webkit-appearance:none;
+  background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239b7560' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 10px center;
+  border:1.5px solid rgba(122,30,46,.2);border-radius:10px;
+  padding:7px 30px 7px 12px;
+  font-family:'Montserrat',sans-serif;font-size:11px;font-weight:500;
+  color:#7a1e2e;cursor:pointer;outline:none;
+  transition:border-color .2s;
+}
+.filter-select:focus{border-color:rgba(122,30,46,.5)}
+
+.list-header{
+  display:grid;grid-template-columns:40px 1fr 52px;
+  padding:10px 16px;border-bottom:1px solid rgba(150,110,90,.1);background:#fdf7f0;
+}
+.list-header span{font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:#b8a090;font-weight:500}
+.list-header .h-status{text-align:center}
+
+.guest-rows{max-height:440px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(122,30,46,.2) transparent}
+.guest-rows::-webkit-scrollbar{width:4px}
+.guest-rows::-webkit-scrollbar-thumb{background:rgba(122,30,46,.2);border-radius:4px}
+
+.guest-row{
+  display:grid;grid-template-columns:40px 1fr 52px;
+  padding:13px 16px;border-bottom:1px solid rgba(150,110,90,.07);
+  align-items:center;transition:background .15s;animation:rowIn .3s ease both;
+}
+.guest-row:last-child{border-bottom:none}
+.guest-row:hover{background:#fdf7f0}
+@keyframes rowIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+.row-num{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:rgba(122,30,46,.3);line-height:1}
+.row-name{font-family:'Cormorant Garamond',serif;font-size:18px;color:#3d2c24;line-height:1.3}
+.row-name.anonymous{color:#c9b0a0;font-style:italic;font-size:15px}
+.row-time{font-size:10px;color:#c9b0a0;letter-spacing:.03em;margin-top:2px;font-family:'Montserrat',sans-serif}
+.row-status{text-align:center;font-size:20px;line-height:1}
+
+.list-empty{padding:32px 20px;text-align:center;font-family:'Cormorant Garamond',serif;font-size:17px;color:#c9b0a0;font-style:italic}
+
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 </style>
 </head>
 <body>
+
 <div class="card">
   <p class="card-label">Админка</p>
   <p class="couple">Еркін &amp; Жанель</p>
   <p class="wedding-date">5 шілде 2026 • Baq Sarai</p>
+  <div class="divider-h"></div>
 
-  <div class="divider"></div>
-
-  <p class="counter-label">🤍 Келемін деді</p>
-  <p class="counter" id="count">—</p>
-  <p class="counter-sub">қонақ</p>
+  <div class="counters-row">
+    <div>
+      <p class="c-label">🤍 Келеді</p>
+      <p class="c-num" id="countYes">—</p>
+      <p class="c-sub">қонақ</p>
+    </div>
+    <div>
+      <p class="c-label">🫠 Келмейді</p>
+      <p class="c-num no-num" id="countNo">—</p>
+      <p class="c-sub">қонақ</p>
+    </div>
+  </div>
 
   <div class="status">
-    <span class="dot"></span>
-    <span id="status">Тікелей • 00:00:00</span>
+    <span id="status"><span class="dot"></span>Тікелей жүктелуде...</span>
+  </div>
+</div>
+
+<div class="list-wrap">
+  <button class="list-toggle" onclick="toggleList()">
+    <span class="toggle-left">
+      <span>❤️</span>
+      <span>Тізім</span>
+    </span>
+    <svg class="toggle-arrow" id="toggleArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+  </button>
+
+  <div class="guest-list-box" id="guestListBox">
+    <div class="filter-bar">
+      <span class="filter-label">Фильтр</span>
+      <select class="filter-select" id="filterSelect" onchange="renderList()">
+        <option value="all">Барлығы</option>
+        <option value="yes">🤍 Келеді</option>
+        <option value="no">🫠 Келмейді</option>
+      </select>
+    </div>
+    <div class="list-header">
+      <span>#</span>
+      <span>Аты</span>
+      <span class="h-status">Күй</span>
+    </div>
+    <div class="guest-rows" id="guestRows">
+      <div class="list-empty">Жүктелуде...</div>
+    </div>
   </div>
 </div>
 
 <script>
 const FB = 'https://shaqyrtu-yerkin-default-rtdb.firebaseio.com';
 
-// Realtime слушатель — Firebase SSE
-const es = new EventSource(`${FB}/rsvp/yes.json`);
-
-es.addEventListener('put', e => {
-  const val = JSON.parse(e.data).data;
-  updateDisplay(val === null ? 0 : val);
-});
-
-es.addEventListener('patch', e => {
-  const val = JSON.parse(e.data).data;
-  if (val !== null) updateDisplay(val);
-});
-
-es.onerror = () => {
-  document.getElementById('status').textContent = 'Байланыс үзілді...';
+// Состояние — всегда перезаписывается целиком, никаких накоплений
+let state = {
+  yesCount: 0,
+  noCount:  0,
+  yesGuests: {},  // объект {key: {name,time}} — избегаем дублей
+  noGuests:  {},  // объект {key: {name,time}}
+  yesReady: false,
+  noReady:  false,
+  yesGReady: false,
+  noGReady:  false,
 };
 
-function updateDisplay(val) {
-  const el = document.getElementById('count');
-  el.textContent = val;
-  // Анимация при изменении
-  el.classList.remove('bump');
-  void el.offsetWidth;
-  el.classList.add('bump');
-  setTimeout(() => el.classList.remove('bump'), 300);
+let listOpen = false;
 
+function allReady(){
+  return state.yesReady && state.noReady && state.yesGReady && state.noGReady;
+}
+
+/* ── Счётчик YES ── */
+const esYes = new EventSource(`${FB}/rsvp/yes.json`);
+esYes.addEventListener('put', e => {
+  state.yesCount = JSON.parse(e.data).data || 0;
+  state.yesReady = true;
+  onDataUpdate();
+});
+esYes.addEventListener('patch', e => {
+  const v = JSON.parse(e.data).data;
+  if(v !== null){ state.yesCount = v; onDataUpdate(); }
+});
+
+/* ── Счётчик NO ── */
+const esNo = new EventSource(`${FB}/rsvp/no.json`);
+esNo.addEventListener('put', e => {
+  state.noCount = JSON.parse(e.data).data || 0;
+  state.noReady = true;
+  onDataUpdate();
+});
+esNo.addEventListener('patch', e => {
+  const v = JSON.parse(e.data).data;
+  if(v !== null){ state.noCount = v; onDataUpdate(); }
+});
+
+/* ── Гости YES — всегда перезаписываем объект целиком ── */
+const esGuestsYes = new EventSource(`${FB}/rsvp/guests.json`);
+esGuestsYes.addEventListener('put', e => {
+  const val = JSON.parse(e.data).data;
+  // FIX: перезаписываем полностью, не накапливаем
+  state.yesGuests = val || {};
+  state.yesGReady = true;
+  onDataUpdate();
+});
+esGuestsYes.addEventListener('patch', e => {
+  const patch = JSON.parse(e.data).data;
+  if(patch){
+    // FIX: mergeуем по ключам — дублей нет
+    Object.assign(state.yesGuests, patch);
+    onDataUpdate();
+  }
+});
+
+/* ── Гости NO — всегда перезаписываем объект целиком ── */
+const esGuestsNo = new EventSource(`${FB}/rsvp/guests_no.json`);
+esGuestsNo.addEventListener('put', e => {
+  const val = JSON.parse(e.data).data;
+  // FIX: перезаписываем полностью, не накапливаем
+  state.noGuests = val || {};
+  state.noGReady = true;
+  onDataUpdate();
+});
+esGuestsNo.addEventListener('patch', e => {
+  const patch = JSON.parse(e.data).data;
+  if(patch){
+    // FIX: mergeуем по ключам — дублей нет
+    Object.assign(state.noGuests, patch);
+    onDataUpdate();
+  }
+});
+
+[esYes, esNo, esGuestsYes, esGuestsNo].forEach(es => {
+  es.onerror = () => {
+    document.getElementById('status').innerHTML = '⚠️ Байланыс үзілді...';
+  };
+});
+
+function onDataUpdate(){
+  // Счётчики обновляем сразу
+  setNum('countYes', state.yesCount);
+  setNum('countNo',  state.noCount);
+  updateStatus();
+
+  // Список рендерим только когда ВСЕ 4 источника загрузились
+  if(allReady() && listOpen) renderList();
+}
+
+function setNum(id, val){
+  const el = document.getElementById(id);
+  const prev = el.textContent;
+  el.textContent = val;
+  if(prev !== String(val) && prev !== '—'){
+    el.classList.remove('bump');
+    void el.offsetWidth;
+    el.classList.add('bump');
+    setTimeout(() => el.classList.remove('bump'), 300);
+  }
+}
+
+function updateStatus(){
   const now  = new Date();
-  const time = now.toLocaleTimeString('kk-KZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  document.getElementById('status').textContent = `Тікелей • ${time}`;
+  const time = now.toLocaleTimeString('kk-KZ',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('status').innerHTML = `<span class="dot"></span>Тікелей • ${time}`;
+}
+
+setInterval(() => { if(allReady()) updateStatus(); }, 1000);
+
+function toggleList(){
+  listOpen = !listOpen;
+  document.getElementById('guestListBox').classList.toggle('open', listOpen);
+  document.getElementById('toggleArrow').classList.toggle('open', listOpen);
+  if(listOpen){
+    if(allReady()) renderList();
+    else document.getElementById('guestRows').innerHTML = '<div class="list-empty">Жүктелуде...</div>';
+  }
+}
+
+function renderList(){
+  const filter    = document.getElementById('filterSelect').value;
+  const container = document.getElementById('guestRows');
+
+  // Берём массивы из объектов (ключи гарантируют уникальность)
+  const sortedYes = Object.values(state.yesGuests).sort((a,b) => new Date(a.time||0) - new Date(b.time||0));
+  const sortedNo  = Object.values(state.noGuests).sort( (a,b) => new Date(a.time||0) - new Date(b.time||0));
+
+  let entries = [];
+
+  if(filter === 'all' || filter === 'yes'){
+    const anonYes = Math.max(0, state.yesCount - sortedYes.length);
+    for(let i=0; i<anonYes; i++) entries.push({type:'yes', name:null, time:null});
+    for(const g of sortedYes)   entries.push({type:'yes', name:g.name, time:g.time});
+  }
+  if(filter === 'all' || filter === 'no'){
+    const anonNo = Math.max(0, state.noCount - sortedNo.length);
+    for(let i=0; i<anonNo; i++) entries.push({type:'no', name:null, time:null});
+    for(const g of sortedNo)    entries.push({type:'no', name:g.name, time:g.time});
+  }
+
+  if(entries.length === 0){
+    container.innerHTML = '<div class="list-empty">Әлі ешкім тіркелмеген</div>';
+    return;
+  }
+
+  let rows = '';
+  entries.forEach((g, idx) => {
+    const num     = idx + 1;
+    const delay   = (idx * 0.025).toFixed(3);
+    const icon    = g.type === 'yes' ? '❤️' : '💔';
+    const timeStr = g.time
+      ? new Date(g.time).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})
+      : '';
+    const nameHtml = g.name
+      ? `<div class="row-name">${esc(g.name)}</div>${timeStr ? `<div class="row-time">${timeStr}</div>` : ''}`
+      : `<span class="row-name anonymous">—</span>`;
+
+    rows += `<div class="guest-row" style="animation-delay:${delay}s">
+      <div class="row-num">${num}</div>
+      <div>${nameHtml}</div>
+      <div class="row-status">${icon}</div>
+    </div>`;
+  });
+
+  container.innerHTML = rows;
+}
+
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 </script>
-
-
 </body></html>
